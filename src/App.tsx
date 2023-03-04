@@ -1,17 +1,13 @@
 import { useState } from 'react'
+import Canvas from './components/Canvas'
 import  Header  from './components/Header'
 
 function App() {
-  const canvasStyle = {
-    width: window.innerWidth,
-    height: window.innerHeight-84,
-    backgroundColor: '#424242',
-  }
-
+/* <Header/> */
   return (
     <div className="App">
         <Header/>
-        <canvas style={canvasStyle}></canvas>
+        <Canvas/>
     </div>
   )
 }

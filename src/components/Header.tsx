@@ -1,11 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+
 import HeaderButton from './HeaderButton';
 import save from '../assets/save-60.png';
 import line from '../assets/line-50.png';
 import pencil from '../assets/pencil-50.png';
 import drag from '../assets/drag-50.png';
 import rectangle from '../assets/rectangular-48.png';
+import { exportCanvasToPng } from '../controller';
 
 
 const Header = () => {
@@ -19,14 +21,12 @@ const Header = () => {
         margin: 0 20%;
     `;
 
-
-
     return (
         <HeaderContainer>
             <HeaderButton 
                 label="Save" 
                 imgPath={save} 
-                handler={() => {console.log("Save")}}/>
+                handler={exportCanvasToPng}/>
             <HeaderButton 
                 label="Line" 
                 imgPath={line}
