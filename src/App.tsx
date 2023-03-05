@@ -3,12 +3,13 @@ import Canvas from './components/Canvas'
 import  Header  from './components/Header'
 
 function App() {
+  const [shapeName, setShapeName] = useState('line')
 
   return (
     <div className="App">
        
-        <Canvas/>
-        <Header/>
+        <Canvas shapeName={shapeName}/>
+        <Header setShapeName={setShapeName}/>
     </div>
   )
 }

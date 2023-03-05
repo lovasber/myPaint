@@ -8,13 +8,23 @@ import pencil from '../assets/pencil-50.png';
 import drag from '../assets/drag-50.png';
 import rectangle from '../assets/rectangular-48.png';
 import { handleSaveButtonClick,
-         handleLineButtonClick, 
-         handleRectangleButtonClick, 
          handleSelectButtonClick, 
          handleFreeHandButtonClick 
 } from '../controller';
 
-const Header = () => {
+type prop = {
+    setShapeName: (shapeName:string)=>void
+}
+
+const Header = ({ setShapeName }: prop) => {
+
+    const handleLineButtonClick = () => {
+        setShapeName("line")
+    }
+
+    const handleRectangleButtonClick = () => {
+        setShapeName("rectangle")
+    }
 
     const HeaderContainer = styled.div`
         display: flex;

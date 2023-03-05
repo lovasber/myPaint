@@ -3,10 +3,11 @@ import rough from 'roughjs'
 import { Drawable } from 'roughjs/bin/core'
 import Element from '../interfaces/Element'
 
+type prop = {
+    shapeName: string
+}
 
-
-const Canvas = () => {
-    const shapeName = 'line'
+const Canvas = ({ shapeName }: prop ) => {
     const generator = rough.generator()
     const [elements, setElements] = React.useState([] as Element[])
     const [drawing, setDrawing] = React.useState(false as boolean)
