@@ -19,11 +19,15 @@ type prop = {
 const Header = ({ setToolName }: prop) => {
 
     const handleLineButtonClick = () => {
-        setToolName("line")
+        setToolName('line')
     }
 
     const handleRectangleButtonClick = () => {
-        setToolName("rectangle")
+        setToolName('rectangle')
+    }
+
+    const handleSelectButtonClick = () => {
+        setToolName('select')
     }
 
     const HeaderContainer = styled.div`
