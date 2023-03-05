@@ -13,17 +13,17 @@ import { handleSaveButtonClick,
 } from '../controller';
 
 type prop = {
-    setShapeName: (shapeName:string)=>void
+    setToolName: (toolName:string)=>void
 }
 
-const Header = ({ setShapeName }: prop) => {
+const Header = ({ setToolName }: prop) => {
 
     const handleLineButtonClick = () => {
-        setShapeName("line")
+        setToolName("line")
     }
 
     const handleRectangleButtonClick = () => {
-        setShapeName("rectangle")
+        setToolName("rectangle")
     }
 
     const HeaderContainer = styled.div`

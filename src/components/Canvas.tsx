@@ -4,10 +4,10 @@ import { Drawable } from 'roughjs/bin/core'
 import Element from '../interfaces/Element'
 
 type prop = {
-    shapeName: string
+    toolName: string
 }
 
-const Canvas = ({ shapeName }: prop ) => {
+const Canvas = ({ toolName }: prop ) => {
     const generator = rough.generator()
     const [elements, setElements] = React.useState([] as Element[])
     const [drawing, setDrawing] = React.useState(false as boolean)
@@ -35,9 +35,9 @@ const Canvas = ({ shapeName }: prop ) => {
     }
 
     const createShape = (x1: number, y1: number, x2: number, y2: number): Drawable  =>  {
-        if(shapeName === 'line'){
+        if(toolName === 'line'){
           return generator.line(x1, y1, x2, y2)
-        }else if(shapeName === 'rectangle'){
+        }else if(toolName === 'rectangle'){
           return generator.rectangle(x1, y1, x2-x1, y2-y1)
         }else{
           console.error("unidentified Shape!")
