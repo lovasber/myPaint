@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="App">
         <Header/>
-        <Canvas/>
+        <Canvas canvasHeight={window.innerHeight} canvasWidth={window.innerWidth}/>
     </div>
   )
 }
