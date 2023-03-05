@@ -33,7 +33,7 @@ const Canvas: React.FC<Props> = ({ canvasWidth, canvasHeight }) => {
   
       canvas.mouseReleased(() => {
         isDrawing.current = false;
-        p.rect(startXRef.current, startYRef.current, p.mouseX, p.mouseY);
+        p.line(startXRef.current, startYRef.current, p.mouseX, p.mouseY);
       });
     }
   };
