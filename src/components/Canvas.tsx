@@ -72,7 +72,7 @@ const Canvas = () => {
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
               width={window.innerWidth}
-              height={window.innerHeight}
+              height={window.innerHeight-75}
           >
           </canvas>
         </div>

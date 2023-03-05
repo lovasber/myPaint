@@ -19,6 +19,7 @@ const Header = () => {
         align-items: center;
         padding: 0 20px;
         margin: 0 20%;
+        heihgt: 75px;
     `;
 
     return (
