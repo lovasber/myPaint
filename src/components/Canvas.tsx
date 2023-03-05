@@ -4,10 +4,13 @@ import { Drawable } from 'roughjs/bin/core'
 import Element from '../interfaces/Element'
 
 
+
 const Canvas = () => {
+    const shapeName = 'line'
     const generator = rough.generator()
     const [elements, setElements] = React.useState([] as Element[])
     const [drawing, setDrawing] = React.useState(false as boolean)
+    
 
     useEffect(() => {
         const canvas = document.getElementById('canvas') as HTMLCanvasElement
@@ -16,17 +19,31 @@ const Canvas = () => {
 
         const roughCanvas = rough.canvas(canvas)
 
-        elements.forEach(({line}) => {
-            roughCanvas.draw(line as Drawable)
+        elements.forEach(({roughElement}) => {
+            roughCanvas.draw(roughElement as Drawable)
         })
         
 
     }, [elements])
 
     //V2
-    const createElement = (x1: number, y1: number, x2: number, y2: number) =>{
-        const line = generator.line(x1, y1, x2, y2)
-        return { x1, y1, x2, y2, line}
+    const createElement = (x1: number, y1: number, x2: number, y2: number) : Element =>{
+
+        const roughElement = createShape(x1, y1, x2, y2)
+        return { x1, y1, x2, y2, roughElement}
+    }
+
+    const createShape = (x1: number, y1: number, x2: number, y2: number): Drawable  =>  {
+        if(shapeName === 'line'){
+          return generator.line(x1, y1, x2, y2)
+        }else if(shapeName === 'rectangle'){
+          return generator.rectangle(x1, y1, x2-x1, y2-y1)
+        }else{
+          console.error("unidentified Shape!")
+          return generator.line(0,0,0,0)
+        }
+        
+        
     }
 
     const handleMouseDown = (event: React.MouseEvent) => {
@@ -36,7 +53,7 @@ const Canvas = () => {
         console.log(event.clientX, event.clientY)
         
         const element = createElement(clientX, clientY, clientX, clientY)
-        setElements(prevState => [...prevState, element])
+        setElements(prevState => [...prevState, element as Element])
     }
 
     const handleMouseMove = (event: React.MouseEvent) => {

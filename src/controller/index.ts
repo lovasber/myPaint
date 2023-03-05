@@ -1,3 +1,19 @@
-export const exportCanvasToPng = () => {
-    console.log("hello Save")
+export const handleSaveButtonClick = () => {
+
+}
+
+export const handleLineButtonClick = () => {
+
+}
+
+export const handleRectangleButtonClick = () => {
+    
+}
+
+export const handleSelectButtonClick = () => {
+    
+}
+
+export const handleFreeHandButtonClick = () => {
+    
 }

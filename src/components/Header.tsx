@@ -7,8 +7,12 @@ import line from '../assets/line-50.png';
 import pencil from '../assets/pencil-50.png';
 import drag from '../assets/drag-50.png';
 import rectangle from '../assets/rectangular-48.png';
-import { exportCanvasToPng } from '../controller';
-
+import { handleSaveButtonClick,
+         handleLineButtonClick, 
+         handleRectangleButtonClick, 
+         handleSelectButtonClick, 
+         handleFreeHandButtonClick 
+} from '../controller';
 
 const Header = () => {
 
@@ -27,23 +31,23 @@ const Header = () => {
             <HeaderButton 
                 label="Save" 
                 imgPath={save} 
-                handler={exportCanvasToPng}/>
+                handler={handleSaveButtonClick}/>
             <HeaderButton 
                 label="Line" 
                 imgPath={line}
-                handler={() => {console.log("Line")}}/>
+                handler={handleLineButtonClick}/>
             <HeaderButton 
                 label="Rectangle" 
                 imgPath={rectangle}
-                handler={() => {console.log("Rectangle")}}/>
+                handler={handleRectangleButtonClick}/>
             <HeaderButton 
                 label="Select" 
                 imgPath={drag}
-                handler={() => {console.log("Select")}}/>
+                handler={handleSelectButtonClick}/>
             <HeaderButton 
                 label="Freehand"
                 imgPath={pencil}
-                handler={() => {console.log("Pencil")}}/>
+                handler={handleFreeHandButtonClick}/>
         </HeaderContainer>
     )
 }
