@@ -16,8 +16,8 @@ const Canvas = () => {
 
         const roughCanvas = rough.canvas(canvas)
 
-        elements.forEach(({roughElement}) => {
-            roughCanvas.draw(roughElement as Drawable)
+        elements.forEach(({line}) => {
+            roughCanvas.draw(line as Drawable)
         })
         
 
@@ -25,13 +25,15 @@ const Canvas = () => {
 
     //V2
     const createElement = (x1: number, y1: number, x2: number, y2: number) =>{
-        const roughElement = generator.line(x1, y1, x2, y2)
-        return { x1, y1, x2, y2, roughElement}
+        const line = generator.line(x1, y1, x2, y2)
+        return { x1, y1, x2, y2, line}
     }
 
-    const handleMouseDown = (e: React.MouseEvent) => {
+    const handleMouseDown = (event: React.MouseEvent) => {
         setDrawing(true)
-        const {clientX, clientY } = e
+        const { clientX, clientY } = event
+        console.log({event})
+        console.log(event.clientX, event.clientY)
         
         const element = createElement(clientX, clientY, clientX, clientY)
         setElements(prevState => [...prevState, element])
@@ -50,66 +52,31 @@ const Canvas = () => {
         const tempElements = [...elements]
         tempElements[lastIndex] = updatedElement
         setElements(tempElements)
-        console.log({lastIndex})
+        //console.log({lastIndex})
     }
 
-    const handleMouseUp = (e: React.MouseEvent) => {
+    const handleMouseUp = (event: React.MouseEvent) => {
         setDrawing(false)
     }
-    
-    /*
-    //V1
-
-    const createElement = (x1: number, y1: number, x2: number, y2: number) => {
-        const roughElement = generator.line(x1, y1, x2, y2);
-        return {x1, y1, x2, y2, roughElement}
-    }
-
-    const handleMouseDown = (e: React.MouseEvent) => {
-        setDrawing(true)
-        const { clientX, clientY } = e as React.MouseEvent
-        const element = createElement(clientX, clientY, clientX, clientY)
-        setElements((prevState)=>[...prevState, element])
-    }
-
-    const handleMouseMove = (e: React.MouseEvent) => {
-        if (drawing) {
-            const { clientX, clientY } = e as React.MouseEvent
-            const lastIndex : number = elements.length - 1
-            const { x1, y1 } = elements[lastIndex]
-            const updatedElement = createElement(x1, y1, clientX, clientY)
-            
-            const elementsCopy = [...elements]
-            elementsCopy[lastIndex] = updatedElement
-            setElements(elementsCopy)
-            console.log(x1, y1, clientX, clientY)
-        }
-    }
-    
-
-    const handleMouseUp = (e: React.MouseEvent) => {
-        setDrawing(false)
-    }
-*/
 
     const canvasStyle = {
-        /*width: window.innerWidth,
-        height: window.innerHeight,
-        */
-        width: '100%',
-        height: '100%',
         backgroundColor: '#424242',
       }
 
     return (
-        <canvas 
-            id='canvas' 
-            style={canvasStyle}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-        >
-        </canvas>
+        <div>
+          <canvas   
+              id='canvas' 
+              style={canvasStyle}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              width={window.innerWidth}
+              height={window.innerHeight}
+          >
+          </canvas>
+        </div>
+        
     )
 }
 

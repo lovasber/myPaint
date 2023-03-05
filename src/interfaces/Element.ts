@@ -5,5 +5,5 @@ export default interface Element {
     y1: number,
     x2: number,
     y2: number,
-    roughElement: Drawable
+    line: Drawable
 }

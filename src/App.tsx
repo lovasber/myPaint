@@ -6,8 +6,9 @@ function App() {
 /* <Header/> */
   return (
     <div className="App">
-        <Header/>
+       
         <Canvas/>
+        <Header/>
     </div>
   )
 }
