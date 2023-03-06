@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect, useRef, useLayoutEffect  } from 'react';
+import { fabric } from "fabric";
 
 type prop = {
     toolName: string
@@ -7,66 +8,92 @@ type prop = {
 const HEADER_HEIGHT = 75
 
 const Canvas = ({ toolName }: prop ) => {
-    const [elements, setElements] = useState([] as Element[])
-    const [action, setAction] = useState('none' as string)
-    const [screenWidth, setScreenWidth] = useState(window.innerWidth)
-    const [height, setHeight] = useState(window.innerHeight - HEADER_HEIGHT)
-    const [selectedElement, setSelectedElement] = useState(null as unknown as Element)
+  const [isDrawing, setIsDrawing] = useState(false as boolean)
+  var rect: { set: (arg0: { left?: number; top?: number; width?: number; height?: number; }) => void; } 
+  
+  const isSelecting = () : boolean => toolName === 'line' || toolName === 'rectangle'
 
-    const updateUI = () =>{
-        const canvas = document.getElementById('canvas') as HTMLCanvasElement
-        const context = canvas.getContext('2d') as CanvasRenderingContext2D
-        context.clearRect(0, 0, screenWidth, height)
+  useEffect(() => {
+   
+      const canvas = new fabric.Canvas('canvas', {
+        height: 800,
+        width: 800,
+        fireRightClick: true,
+        fireMiddleClick: true,
+        stopContextMenu: true,
+        backgroundColor: undefined,
+        backgroundImage: undefined,
+      });
 
-        //const roughCanvas = rough.canvas(canvas)
-/*
-        elements.forEach(({roughElement}) => {
-            roughCanvas.draw(roughElement as Drawable)
+      
+
+      canvas.on("mouse:down", (e)=>{
+        if(!isSelecting()) 
+        console.log("I'm gonna draw")
+        var pointer = canvas.getPointer(e.e);
+        var origX = pointer.x;
+        var origY = pointer.y;
+        var pointer = canvas.getPointer(e.e);
+        
+        const rect = new fabric.Rect({
+          left: origX,
+          top: origY,
+          originX: 'left',
+          originY: 'top',
+          width: 61,
+          height: 61,
+          angle: 0,
+          fill: 'rgba(255,0,0,0.5)',
+          transparentCorners: false
+        })
+        
+       /*
+        const line = new fabric.Line([50,10,200,150],{
+          left: origX,
+          top: origY,
+          originX: 'left',
+          originY: 'top',
+          angle: 0,
+          fill: 'rgba(255,0,0,0.5)',
+          transparentCorners: false
         })
         */
-    }
-    
-    useEffect(() => {
-        updateUI()
-    }, [elements])
+        canvas.add(rect);
+      })
 
-    addEventListener('resize',()=>{
-        updateUI()
-        setScreenWidth(window.innerWidth)
-        setHeight(window.innerHeight - HEADER_HEIGHT)
-    })
-
-    const handleMouseDown = (event: React.MouseEvent) => {
-
-    }
-
-    const handleMouseMove = (event: React.MouseEvent) => {
+      canvas.on('mouse:move', (e)=>{
         
-    }
+        if (!isDrawing) return;
 
-    const handleMouseUp = (event: React.MouseEvent) => {
+        const { x, y } = canvas.getPointer(e.e);
+        var pointer = canvas.getPointer(e.e);
+    
+        if(x>pointer.x){
+            rect.set({ left: Math.abs(pointer.x) });
+        }
+        if(y>pointer.y){
+            rect.set({ top: Math.abs(pointer.y) });
+        }
+    
+        rect.set({ width: Math.abs(x - pointer.x) });
+        rect.set({ height: Math.abs(y - pointer.y) });
+    
+    
+        canvas.renderAll();
+      });
 
-    }
-
-    const canvasStyle = {
-        backgroundColor: '#424242',
-    }
-
+      canvas.on('mouse:up', function(o){
+       setIsDrawing(false)
+      });
+      
+      
+    }, [])
     return (
         <div>
-          <canvas   
-              id='canvas' 
-              style={canvasStyle}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-              width={screenWidth}
-              height={height}
-          >
-          </canvas>
+            <canvas id="canvas" />
         </div>
+    );
         
-    )
 }
 
 export default Canvas
