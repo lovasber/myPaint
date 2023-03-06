@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Paint from './components/Canvas'
 import Canvas from './components/Canvas'
 import  Header  from './components/Header'
 
@@ -8,7 +9,7 @@ function App() {
   return (
     <div className="App">
        
-        <Canvas toolName={toolName}/>
+        <Paint />
         <Header setToolName={setToolName}/>
     </div>
   )
