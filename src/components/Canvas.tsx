@@ -16,8 +16,8 @@ const Canvas = ({ toolName }: prop ) => {
     const [width, setWidth] = useState(window.innerWidth)
     const [height, setHeight] = useState(window.innerHeight - HEADER_HEIGHT)
     const [selectedElement, setSelectedElement] = useState(null as unknown as Element)
-    
-    useEffect(() => {
+
+    const updateUI = () =>{
         const canvas = document.getElementById('canvas') as HTMLCanvasElement
         const context = canvas.getContext('2d') as CanvasRenderingContext2D
         context.clearRect(0, 0, width, height)
@@ -27,12 +27,14 @@ const Canvas = ({ toolName }: prop ) => {
         elements.forEach(({roughElement}) => {
             roughCanvas.draw(roughElement as Drawable)
         })
-
-        
-
+    }
+    
+    useEffect(() => {
+        updateUI()
     }, [elements])
 
     addEventListener('resize',()=>{
+        updateUI()
         setWidth(window.innerWidth)
         setHeight(window.innerHeight - HEADER_HEIGHT)
     })
@@ -47,6 +49,14 @@ const Canvas = ({ toolName }: prop ) => {
         return elements.find((element)=> isInRectangle(clientX, clientY, element))
     }
 
+    const isWithinElement = (x: number, y: number, element: Element) =>{
+        if(element.type === 'rectangle'){
+            //isInRectangle()
+        }else if(element.type === 'line'){
+
+        }
+    }
+
     const isInRectangle = (x: number, y: number, element: Element) => {
         const { x1, x2, y1, y2} = element
         const minX = Math.min(x1, x2)
@@ -55,6 +65,10 @@ const Canvas = ({ toolName }: prop ) => {
         const maxY = Math.max(y1, y2)
 
         return x >= minX && x <= maxX && y >= minY && y <= maxY
+    }
+
+    const isInLine = (x: number, y: number, element: Element) =>{
+
     }
 
     const createShape = (x1: number, y1: number, x2: number, y2: number): Drawable  =>  {
