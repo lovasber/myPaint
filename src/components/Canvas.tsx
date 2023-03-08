@@ -11,6 +11,23 @@ type prop = {
 
 const HEADER_HEIGHT = 75
 
+const useKey = (key: any, cb: any) => {
+    const callbackRef = React.useRef(cb)
+    useEffect(() => {
+        callbackRef.current = cb
+    })
+
+    useEffect(() => {
+        const handle = (e: any) => {
+            if (e.code === key){
+                callbackRef.current(e)
+            } 
+        }
+        document.addEventListener('keydown', handle)
+        return () => document.removeEventListener('keydown', handle)
+    }, [key])
+}
+
 const Canvas = ({ toolName, cursor }: prop ) => {
     const generator = rough.generator()
     const [elements, setElements] = useState([] as Element[])
@@ -35,26 +52,27 @@ const Canvas = ({ toolName, cursor }: prop ) => {
         updateUI()
     }, [elements])
 
-    document.addEventListener('resize',(): void =>{
-        updateUI()
-        setScreenWidth(window.innerWidth)
-        setHeight(window.innerHeight - HEADER_HEIGHT)
-    })
-    
     useEffect(() => {
-        document.addEventListener('keydown', (event ): void =>{
-            if(event.key === 'Delete'){
-                
-                if(toolName === actionName.TODELETE){
-                    if(!!elementToDelete){
-                        console.log("delete element")
-                        deleteElement(elementToDelete.id)
-                    }
+        addEventListener('resize',(): void =>{
+            updateUI()
+            setScreenWidth(window.innerWidth)
+            setHeight(window.innerHeight - HEADER_HEIGHT)
+        })
+    }, [])   
+    
+    /*
+    addEventListener('keydown', (event ): void =>{
+        if(event.key === 'Delete'){
+            console.log("delete key pressed")
+            if(toolName === actionName.TODELETE){
+                if(elementToDelete !== null){
+                    console.log("delete element")
+                    deleteElement(elementToDelete.id)
                 }
             }
-        })
-    }, [])
-
+        }
+    })
+*/
     const createElement = (id:number, x1: number, y1: number, x2: number, y2: number, type: string, options?: ResolvedOptions) : Element =>{
         const roughElement = createShape(x1, y1, x2, y2, type, options)
         return { id, x1, y1, x2, y2, type, roughElement}
@@ -111,9 +129,8 @@ const Canvas = ({ toolName, cursor }: prop ) => {
     }
 
     const deleteElement = (id: number) =>{
-        const tempElements = [...elements]
-        tempElements.splice(id, 1)
-        setElements(tempElements)
+        const filteredElements = elements.filter((element) => element.id !== id)
+        setElements(filteredElements)
     }
 
     const handleMouseDown = (event: React.MouseEvent) => {
@@ -123,7 +140,7 @@ const Canvas = ({ toolName, cursor }: prop ) => {
             setAction(actionName.MOVING)
             const element : Element | undefined = getElementAtPosition(clientX, clientY, elements)
             if(!!element){
-                setSelectedElement(element)
+                //setSelectedElement(element)
                 const offsetX = clientX - element.x1
                 const offsetY = clientY - element.y1
                 setSelectedElement({...element, offsetX, offsetY })
@@ -132,12 +149,12 @@ const Canvas = ({ toolName, cursor }: prop ) => {
         }else if(toolName === actionName.TODELETE){
             const { clientX, clientY } = event
             const element : Element | undefined = getElementAtPosition(clientX, clientY, elements)
-            if(!!element){
+            if(element !== null && element !== undefined){
                 setStrokeLineDash(element)
                 resetAllOtherStrokeLineDash(element.id)
                 setElementToDelete(element)
             }else{
-                console.log("no element to delete")
+                console.log("no element found")
             }
         }else{
             setAction(actionName.DRAWING)
@@ -149,7 +166,7 @@ const Canvas = ({ toolName, cursor }: prop ) => {
 
     const setStrokeLineDash = (element: Element) => {
         const tempElement = {...element}
-        tempElement.roughElement.options.strokeLineDash = [25]
+        tempElement.roughElement.options.strokeLineDash = [15]
         const options = tempElement.roughElement.options
         updateElement(element.id, element.x1, element.y1, element.x2, element.y2, tempElement, options)
     }
@@ -163,6 +180,10 @@ const Canvas = ({ toolName, cursor }: prop ) => {
             }
         })
         setElements(tempElements)
+    }
+
+    const uuid = ():number => {
+        return Math.floor(Math.random() * 1000000000)
     }
 
     const handleMouseMove = (event : React.MouseEvent) => {
@@ -183,10 +204,26 @@ const Canvas = ({ toolName, cursor }: prop ) => {
         }
     }
 
+    const handleDeleteKeyDown = (event: React.KeyboardEvent) => {
+        if(event.key === 'Delete'){
+            if(toolName === actionName.TODELETE){
+                if(elementToDelete !== null){
+                    deleteElement(elementToDelete.id)
+                    setElementToDelete(null as unknown as Element)
+                    updateUI()
+                }else{
+                    console.log("no element to delete")
+                }
+            }
+        }
+    }
+
     const handleMouseUp = (event: React.MouseEvent) => {
         setAction('none')
         setSelectedElement(null as unknown as Element)
     }
+
+    useKey('Delete', handleDeleteKeyDown)
 
     const canvasStyle = {
         backgroundColor: '#424242',
@@ -203,6 +240,7 @@ const Canvas = ({ toolName, cursor }: prop ) => {
               onMouseUp={handleMouseUp}
               width={screenWidth}
               height={height}
+              
           >
           </canvas>
         </div>

@@ -29,7 +29,7 @@ const Header = ({ setToolName, setCursor }: prop) => {
     }
 
     const handleMoveButtonClick = () => {
-        setCursor('grab')
+        setCursor('move')
         setToolName(actionName.SELECTING)
     }
 
@@ -63,11 +63,11 @@ const Header = ({ setToolName, setCursor }: prop) => {
                 imgPath={rectangle}
                 handler={handleRectangleButtonClick}/>
             <HeaderButton 
-                label="Select" 
+                label="Move" 
                 imgPath={drag}
                 handler={handleMoveButtonClick}/>
             <HeaderButton 
-                label="Select" 
+                label="Delete Select" 
                 imgPath={select}
                 handler={handleSelectButtonClick}/>
         </HeaderContainer>

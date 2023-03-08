@@ -8,7 +8,6 @@ function App() {
 
   return (
     <div className="App">
-       
         <Canvas toolName={toolName} cursor={cursor}/>
         <Header setToolName={setToolName} setCursor={setCursor}/>
     </div>
