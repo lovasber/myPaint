@@ -51,10 +51,6 @@ const Header = ({ setToolName, setCursor }: prop) => {
     return (
         <HeaderContainer>
             <HeaderButton 
-                label="Save" 
-                imgPath={save} 
-                handler={()=>{}}/>
-            <HeaderButton 
                 label="Line" 
                 imgPath={line}
                 handler={handleLineButtonClick}/>
