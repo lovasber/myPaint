@@ -25,7 +25,6 @@ const Canvas = ({ toolName, cursor }: prop ) => {
         context.clearRect(0, 0, screenWidth, height)
 
         const roughCanvas = rough.canvas(canvas)
-
         elements.forEach(({roughElement}) => {
             roughCanvas.draw(roughElement as Drawable)
         })
@@ -89,12 +88,8 @@ const Canvas = ({ toolName, cursor }: prop ) => {
 
     const distance = (a: { x: number, y: number}, b: { x: number, y: number}) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2)) 
 
-
-
     const updateElement = (id: number, x1: number, y1: number, clientX: number, clientY: number, element: Element) =>{
-
         const updatedElement = createElement(id, x1, y1, clientX, clientY, element.type)
-
         const tempElements = [...elements]
         tempElements[id] = updatedElement
         setElements(tempElements)
@@ -111,10 +106,8 @@ const Canvas = ({ toolName, cursor }: prop ) => {
                 setSelectedElement(element)
                 const offsetX = clientX - element.x1
                 const offsetY = clientY - element.y1
-
+                setSelectedElement({...element, offsetX, offsetY })
                 setAction(actionName.MOVING)
-                
-
             }
         }else{
             setAction(actionName.DRAWING)
@@ -125,17 +118,19 @@ const Canvas = ({ toolName, cursor }: prop ) => {
         
     }
 
-    const handleMouseMove = (event: React.MouseEvent) => {
+    const handleMouseMove = (event : React.MouseEvent) => {
         const {clientX, clientY } = event
         if(action === actionName.DRAWING){            
             const index : number = elements.length - 1
             const { x1, y1 } = elements[index]
             updateElement(index, x1, y1, clientX, clientY, elements[index])
         }else if(action === actionName.MOVING){
-           const { id, x1, y1, x2, y2 } = selectedElement
+           const { id, x1, y1, x2, y2, offsetX, offsetY } = selectedElement
            const width = x2 -x1;
            const height = y2 - y1
-           updateElement(id, clientX, clientY, clientX + width, clientY + height, selectedElement)
+           const newX = clientX - offsetX!
+           const newY = clientY - offsetY!
+           updateElement(id, newX, newY, newX + width, newY + height, selectedElement)
         }
         
     }

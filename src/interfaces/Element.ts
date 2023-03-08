@@ -7,5 +7,7 @@ export default interface Element {
     x2: number,
     y2: number,
     type: string,
-    roughElement: Drawable
+    roughElement: Drawable,
+    offsetX?: number,
+    offsetY?: number,
 }
