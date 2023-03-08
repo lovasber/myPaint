@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import rough from 'roughjs'
 import { Drawable, ResolvedOptions } from 'roughjs/bin/core'
-import Element from '../interfaces/Element'
 import { shape, actionName } from '../interfaces/Enums'
+import { v4 as uuidv4 } from 'uuid';
+
+import Element from '../interfaces/Element'
 
 type prop = {
     toolName: string,
@@ -73,7 +75,7 @@ const Canvas = ({ toolName, cursor }: prop ) => {
         }
     })
 */
-    const createElement = (id:number, x1: number, y1: number, x2: number, y2: number, type: string, options?: ResolvedOptions) : Element =>{
+    const createElement = (id:string, x1: number, y1: number, x2: number, y2: number, type: string, options?: ResolvedOptions) : Element =>{
         const roughElement = createShape(x1, y1, x2, y2, type, options)
         return { id, x1, y1, x2, y2, type, roughElement}
     }
@@ -121,14 +123,15 @@ const Canvas = ({ toolName, cursor }: prop ) => {
 
     const distance = (a: { x: number, y: number}, b: { x: number, y: number}) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2)) 
 
-    const updateElement = (id: number, x1: number, y1: number, clientX: number, clientY: number, element: Element, options?: ResolvedOptions) =>{
+    const updateElement = (id: string, x1: number, y1: number, clientX: number, clientY: number, element: Element, options?: ResolvedOptions) =>{
         const updatedElement = createElement(id, x1, y1, clientX, clientY, element.type, options)
         const tempElements = [...elements]
-        tempElements[id] = updatedElement
+        const index = tempElements.findIndex((element) => element.id === id)
+        tempElements[index] = updatedElement
         setElements(tempElements)
     }
 
-    const deleteElement = (id: number) =>{
+    const deleteElement = (id: string) =>{
         const filteredElements = elements.filter((element) => element.id !== id)
         setElements(filteredElements)
     }
@@ -158,7 +161,7 @@ const Canvas = ({ toolName, cursor }: prop ) => {
             }
         }else{
             setAction(actionName.DRAWING)
-            const id = elements.length
+            const id = uuidv4()
             const element = createElement(id, clientX, clientY, clientX, clientY, toolName)
             setElements(prevState => [...prevState, element as Element])
         }  
@@ -172,26 +175,22 @@ const Canvas = ({ toolName, cursor }: prop ) => {
     }
 
 
-    const resetAllOtherStrokeLineDash = (id: number) =>{
+    const resetAllOtherStrokeLineDash = (id: string) =>{
         const tempElements = [...elements]
-        tempElements.forEach((element, index) => {
-            if(index !== id){
+        tempElements.forEach((element) => {
+            if(element.id !== id){
                 element.roughElement.options.strokeLineDash = []
             }
         })
         setElements(tempElements)
     }
 
-    const uuid = ():number => {
-        return Math.floor(Math.random() * 1000000000)
-    }
-
     const handleMouseMove = (event : React.MouseEvent) => {
         const {clientX, clientY } = event
         if(action === actionName.DRAWING){            
             const index : number = elements.length - 1
-            const { x1, y1 } = elements[index]
-            updateElement(index, x1, y1, clientX, clientY, elements[index],)
+            const { x1, y1, id } = elements[index]
+            updateElement(id, x1, y1, clientX, clientY, elements[index])
         }else if(action === actionName.MOVING){
             if(!!selectedElement){
                 const { id, x1, y1, x2, y2, offsetX, offsetY } = selectedElement

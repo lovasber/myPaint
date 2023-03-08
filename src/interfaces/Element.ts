@@ -1,7 +1,7 @@
 import { Drawable } from "roughjs/bin/core";
 
 export default interface Element {
-    id: number,
+    id: string,
     x1: number,
     y1: number,
     x2: number,
