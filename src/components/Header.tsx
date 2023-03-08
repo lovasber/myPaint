@@ -7,6 +7,7 @@ import line from '../assets/line-50.png';
 import pencil from '../assets/pencil-50.png';
 import drag from '../assets/drag-50.png';
 import rectangle from '../assets/rectangular-48.png';
+import select from '../assets/select-64.png';
 import { actionName, shape } from '../interfaces/Enums';
 
 
@@ -27,9 +28,14 @@ const Header = ({ setToolName, setCursor }: prop) => {
         setToolName(shape.RECTANGLE)
     }
 
-    const handleSelectButtonClick = () => {
+    const handleMoveButtonClick = () => {
         setCursor('grab')
         setToolName(actionName.SELECTING)
+    }
+
+    const handleSelectButtonClick = () => {
+        setCursor('grab')
+        setToolName(actionName.TODELETE)
     }
 
     const HeaderContainer = styled.div`
@@ -59,6 +65,10 @@ const Header = ({ setToolName, setCursor }: prop) => {
             <HeaderButton 
                 label="Select" 
                 imgPath={drag}
+                handler={handleMoveButtonClick}/>
+            <HeaderButton 
+                label="Select" 
+                imgPath={select}
                 handler={handleSelectButtonClick}/>
         </HeaderContainer>
     )
