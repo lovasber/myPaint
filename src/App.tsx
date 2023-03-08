@@ -4,12 +4,13 @@ import  Header  from './components/Header'
 
 function App() {
   const [toolName, setToolName] = useState('line')
+  const [cursor, setCursor] = useState('default')
 
   return (
     <div className="App">
        
-        <Canvas toolName={toolName}/>
-        <Header setToolName={setToolName}/>
+        <Canvas toolName={toolName} cursor={cursor}/>
+        <Header setToolName={setToolName} setCursor={setCursor}/>
     </div>
   )
 }

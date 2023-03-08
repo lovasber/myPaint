@@ -7,27 +7,29 @@ import line from '../assets/line-50.png';
 import pencil from '../assets/pencil-50.png';
 import drag from '../assets/drag-50.png';
 import rectangle from '../assets/rectangular-48.png';
-import { handleSaveButtonClick,
-         handleSelectButtonClick, 
-         handleFreeHandButtonClick 
-} from '../controller';
+import { actionName, shape } from '../interfaces/Enums';
+
 
 type prop = {
-    setToolName: (toolName:string)=>void
+    setToolName: (toolName:string)=>void,
+    setCursor: (toolName:string)=>void
 }
 
-const Header = ({ setToolName }: prop) => {
+const Header = ({ setToolName, setCursor }: prop) => {
 
     const handleLineButtonClick = () => {
-        setToolName('line')
+        setCursor('default')
+        setToolName(shape.LINE)
     }
 
     const handleRectangleButtonClick = () => {
-        setToolName('rectangle')
+        setCursor('default')
+        setToolName(shape.RECTANGLE)
     }
 
     const handleSelectButtonClick = () => {
-        setToolName('select')
+        setCursor('grab')
+        setToolName(actionName.SELECTING)
     }
 
     const HeaderContainer = styled.div`
@@ -45,7 +47,7 @@ const Header = ({ setToolName }: prop) => {
             <HeaderButton 
                 label="Save" 
                 imgPath={save} 
-                handler={handleSaveButtonClick}/>
+                handler={()=>{}}/>
             <HeaderButton 
                 label="Line" 
                 imgPath={line}
@@ -58,10 +60,6 @@ const Header = ({ setToolName }: prop) => {
                 label="Select" 
                 imgPath={drag}
                 handler={handleSelectButtonClick}/>
-            <HeaderButton 
-                label="Freehand"
-                imgPath={pencil}
-                handler={handleFreeHandButtonClick}/>
         </HeaderContainer>
     )
 }

@@ -2,14 +2,16 @@ import React, { useEffect, useState } from 'react'
 import rough from 'roughjs'
 import { Drawable } from 'roughjs/bin/core'
 import Element from '../interfaces/Element'
+import { shape, actionName } from '../interfaces/Enums'
 
 type prop = {
-    toolName: string
+    toolName: string,
+    cursor: string
 }
 
 const HEADER_HEIGHT = 75
 
-const Canvas = ({ toolName }: prop ) => {
+const Canvas = ({ toolName, cursor }: prop ) => {
     const generator = rough.generator()
     const [elements, setElements] = useState([] as Element[])
     const [action, setAction] = useState('none' as string)
@@ -40,9 +42,19 @@ const Canvas = ({ toolName }: prop ) => {
     })
 
     const createElement = (id:number, x1: number, y1: number, x2: number, y2: number, type: string) : Element =>{
-
         const roughElement = createShape(x1, y1, x2, y2, type)
         return { id, x1, y1, x2, y2, type:toolName, roughElement}
+    }
+
+    const createShape = (x1: number, y1: number, x2: number, y2: number, type: string): Drawable  =>  {
+        if(type === shape.LINE){
+            return generator.line(x1, y1, x2, y2)
+        }else if(toolName === shape.RECTANGLE){
+            return generator.rectangle(x1, y1, x2-x1, y2-y1)
+        }else{
+            console.error("unidentified Shape!")
+            return generator.line(10,10,10,10)
+        }        
     }
 
     const getElementAtPosition = (clientX: number, clientY: number, elements: Element[]): Element | undefined => {
@@ -50,7 +62,7 @@ const Canvas = ({ toolName }: prop ) => {
     }
 
     const isWithinElement = (x: number, y: number, element: Element) =>{
-        if(element.type === 'rectangle'){
+        if(element.type === shape.RECTANGLE){
             return isInRectangle(x, y, element)
         }else if(element.type === 'line'){
             return isInLine(x, y, element)
@@ -77,16 +89,7 @@ const Canvas = ({ toolName }: prop ) => {
 
     const distance = (a: { x: number, y: number}, b: { x: number, y: number}) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2)) 
 
-    const createShape = (x1: number, y1: number, x2: number, y2: number, type: string): Drawable  =>  {
-        if(type === 'line'){
-            return generator.line(x1, y1, x2, y2)
-        }else if(toolName === 'rectangle'){
-            return generator.rectangle(x1, y1, x2-x1, y2-y1)
-        }else{
-            console.error("unidentified Shape!")
-            return generator.line(0,0,0,0)
-        }        
-    }
+
 
     const updateElement = (id: number, x1: number, y1: number, clientX: number, clientY: number, element: Element) =>{
 
@@ -100,19 +103,20 @@ const Canvas = ({ toolName }: prop ) => {
     const handleMouseDown = (event: React.MouseEvent) => {
         const { clientX, clientY } = event
         
-        if(toolName === 'select'){
+        if(toolName === actionName.SELECTING){
+            setAction(actionName.MOVING)
             const element : Element | undefined = getElementAtPosition(clientX, clientY, elements)
             console.log(element)
             if(element){
                 const offsetX = clientX - element.x1
                 const offsetY = clientY - element.y1
 
-                setAction('moving')
+                setAction(actionName.MOVING)
                 
 
             }
         }else{
-            setAction('drawing')
+            setAction(actionName.DRAWING)
             const id = elements.length
             const element = createElement(id, clientX, clientY, clientX, clientY, toolName)
             setElements(prevState => [...prevState, element as Element])
@@ -122,11 +126,11 @@ const Canvas = ({ toolName }: prop ) => {
 
     const handleMouseMove = (event: React.MouseEvent) => {
         const {clientX, clientY } = event
-        if(action === 'drawing'){            
+        if(action === actionName.DRAWING){            
             const index : number = elements.length - 1
             const { x1, y1 } = elements[index]
             updateElement(index, x1, y1, clientX, clientY, elements[index])
-        }else if(action === 'moving'){
+        }else if(action === actionName.MOVING){
            const { id, x1, y1, x2, y2 } = selectedElement
            const width = x2 -x1;
            const height = y2 - y1
@@ -142,6 +146,7 @@ const Canvas = ({ toolName }: prop ) => {
 
     const canvasStyle = {
         backgroundColor: '#424242',
+        cursor: `${cursor}`
       }
 
     return (
