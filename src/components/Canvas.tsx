@@ -43,13 +43,13 @@ const Canvas = ({ toolName, cursor }: prop ) => {
 
     const createElement = (id:number, x1: number, y1: number, x2: number, y2: number, type: string) : Element =>{
         const roughElement = createShape(x1, y1, x2, y2, type)
-        return { id, x1, y1, x2, y2, type:toolName, roughElement}
+        return { id, x1, y1, x2, y2, type, roughElement}
     }
 
     const createShape = (x1: number, y1: number, x2: number, y2: number, type: string): Drawable  =>  {
         if(type === shape.LINE){
             return generator.line(x1, y1, x2, y2)
-        }else if(toolName === shape.RECTANGLE){
+        }else if(type === shape.RECTANGLE){
             return generator.rectangle(x1, y1, x2-x1, y2-y1)
         }else{
             console.error("unidentified Shape!")
@@ -64,7 +64,7 @@ const Canvas = ({ toolName, cursor }: prop ) => {
     const isWithinElement = (x: number, y: number, element: Element) =>{
         if(element.type === shape.RECTANGLE){
             return isInRectangle(x, y, element)
-        }else if(element.type === 'line'){
+        }else if(element.type === shape.LINE){
             return isInLine(x, y, element)
         }
     }
@@ -108,6 +108,7 @@ const Canvas = ({ toolName, cursor }: prop ) => {
             const element : Element | undefined = getElementAtPosition(clientX, clientY, elements)
             console.log(element)
             if(element){
+                setSelectedElement(element)
                 const offsetX = clientX - element.x1
                 const offsetY = clientY - element.y1
 
